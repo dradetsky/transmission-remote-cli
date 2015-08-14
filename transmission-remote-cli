@@ -29,6 +29,8 @@ CONNECTION_ERROR = 1
 JSON_ERROR       = 2
 CONFIGFILE_ERROR = 3
 
+control_escape_map = dict.fromkeys(range(32))
+
 # use simplejson if available because it seems to be faster
 try:
     import simplejson as json
@@ -282,9 +284,10 @@ class TransmissionRequest(object):
         if authhandler:
             authhandler.retried = 0
         try:
-            data = json.loads(unicode(response))
-        except ValueError:
-            quit("Cannot parse response: %s\n" % response, JSON_ERROR)
+            safe_response = unicode(response).translate(control_escape_map)
+            data = json.loads(safe_response, strict=False)
+        except ValueError as e:
+            quit("%s\nCannot parse response: %s\n" % (e.message, response), JSON_ERROR)
         self.open_request = None
         return data
 
