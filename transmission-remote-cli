@@ -1265,7 +1265,7 @@ class Interface(object):
 
         location = self.dialog_input_text("Add torrent from file, URL or pure hash"
                                 + (" - HDD (free): %.3f GB" % free_space if free_space else ""),
-                                        homedir2tilde(os.getcwd()+os.sep), tab_complete='files')
+                                          '', tab_complete='files')
 
         if location:
             if re.match('^[0-9a-fA-F]{40}$', location):
